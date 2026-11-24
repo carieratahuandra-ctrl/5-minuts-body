@@ -1,0 +1,1282 @@
+!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>5-Minute Body Challenge - Chapter 4: My Body</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka (ramah anak & tebal untuk layar PID) dan Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- Tone.js untuk efek suara interaktif tanpa file eksternal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 50%, #6366f1 100%);
+            user-select: none;
+            -webkit-user-select: none;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        h1, h2, h3, .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Kontainer Utama 16:9 Responsif untuk Layar PID */
+        .pid-stage {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            max-width: 1440px;
+            max-height: 96vh;
+            background: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35), 0 0 0 8px rgba(255, 255, 255, 0.25);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Animasi Kustom */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+        .animate-float {
+            animation: float 3.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-scale {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+        }
+        .animate-pulse-scale {
+            animation: pulse-scale 2s ease-in-out infinite;
+        }
+
+        @keyframes pop-in {
+            0% { transform: scale(0.6); opacity: 0; }
+            70% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop-in {
+            animation: pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .animate-shake {
+            animation: shake 0.45s ease-in-out;
+        }
+
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 12s linear infinite;
+        }
+
+        /* Gaya Tombol 3D Ramah Sentuh PID */
+        .btn-3d {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 0 rgba(0, 0, 0, 0.18);
+        }
+        .btn-3d:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-green {
+            background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+            box-shadow: 0 8px 0 #15803d;
+        }
+        .btn-green:active {
+            box-shadow: 0 2px 0 #15803d;
+        }
+
+        .btn-blue {
+            background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+            box-shadow: 0 8px 0 #1d4ed8;
+        }
+        .btn-blue:active {
+            box-shadow: 0 2px 0 #1d4ed8;
+        }
+
+        .btn-amber {
+            background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+            box-shadow: 0 8px 0 #b45309;
+        }
+        .btn-amber:active {
+            box-shadow: 0 2px 0 #b45309;
+        }
+
+        .btn-purple {
+            background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%);
+            box-shadow: 0 8px 0 #6b21a8;
+        }
+        .btn-purple:active {
+            box-shadow: 0 2px 0 #6b21a8;
+        }
+
+        /* Hotspot Interaktif Soal 2 */
+        .body-hotspot {
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+        }
+        .body-hotspot:hover {
+            filter: brightness(1.08);
+        }
+        .body-hotspot:active {
+            transform: scale(0.95);
+        }
+        .hint-ring {
+            animation: ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        /* Pattern Background Lembut */
+        .bg-dots {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="w-screen h-screen flex items-center justify-center p-2 sm:p-4">
+
+    <!-- LAYAR UTAMA 16:9 -->
+    <main id="app-stage" class="pid-stage bg-dots">
+        
+        <!-- ==================== HEADER BAR (IDENTITAS & TIMER) ==================== -->
+        <header id="top-bar" class="w-full bg-white border-b-4 border-sky-100 px-4 sm:px-8 py-2.5 sm:py-3 flex items-center justify-between z-20 shrink-0">
+            <!-- Kiri: Identitas Mata Pelajaran & Guru -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center font-display font-bold text-xl sm:text-2xl shadow-md">
+                    📚
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="bg-sky-100 text-sky-800 text-xs sm:text-sm font-extrabold px-2.5 py-0.5 rounded-full">ENGLISH • GRADE 3 (FASE B)</span>
+                        <span class="bg-amber-100 text-amber-800 text-xs sm:text-sm font-extrabold px-2.5 py-0.5 rounded-full">CHAPTER 4: MY BODY</span>
+                    </div>
+                    <p class="text-slate-600 text-xs sm:text-sm font-bold mt-0.5">Guru: <span class="text-slate-800">Rindang Setyo Kinasih, S.Pd.</span></p>
+                </div>
+            </div>
+
+            <!-- Tengah: Indikator Progres Soal (Muncul saat Kuis) -->
+            <div id="quiz-progress-container" class="hidden md:flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-2xl border-2 border-slate-200">
+                <span class="text-slate-600 font-extrabold text-sm mr-1">SOAL:</span>
+                <div id="progress-dots" class="flex items-center gap-2">
+                    <!-- Dots di-render oleh JS -->
+                </div>
+            </div>
+
+            <!-- Kanan: Timer Global 5:00 & Timer Soal + Tombol Suara -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <!-- Timer Per Soal (Muncul saat Kuis) -->
+                <div id="question-timer-badge" class="hidden items-center gap-1.5 bg-purple-100 border-2 border-purple-300 text-purple-800 px-3 sm:px-4 py-1.5 rounded-2xl font-display font-bold text-base sm:text-xl">
+                    <span>⏳</span>
+                    <span id="question-timer-text">45s</span>
+                </div>
+
+                <!-- Timer Total 5 Menit -->
+                <div id="global-timer-badge" class="flex items-center gap-2 bg-rose-50 border-2 border-rose-200 text-rose-600 px-3 sm:px-5 py-1.5 rounded-2xl font-display font-bold text-lg sm:text-2xl shadow-inner">
+                    <span>⏱️</span>
+                    <span id="global-timer-text">05:00</span>
+                </div>
+
+                <!-- Tombol Audio Toggle -->
+                <button onclick="toggleAudio()" id="btn-audio-toggle" title="Suara / Efek" class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-100 hover:bg-amber-200 border-2 border-amber-300 text-amber-800 flex items-center justify-center text-xl sm:text-2xl transition active:scale-95">
+                    🔊
+                </button>
+            </div>
+        </header>
+
+        <!-- ==================== AREA KONTEN DINAMIS ==================== -->
+        <div id="screen-container" class="flex-1 w-full h-full relative overflow-hidden flex items-center justify-center p-4 sm:p-6">
+            
+            <!-- 1. HALAMAN PEMBUKA (START SCREEN) -->
+            <section id="screen-start" class="w-full h-full flex flex-col lg:flex-row items-center justify-between gap-6 px-2 sm:px-8 animate-pop-in">
+                <!-- Kolom Kiri: Judul, Subtitle, Pilihan Nama Murid Opsional, Tombol START -->
+                <div class="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left z-10">
+                    <div class="inline-flex items-center gap-2 bg-amber-400 text-amber-950 font-display font-bold px-4 py-1.5 rounded-full text-sm sm:text-base mb-3 shadow-sm">
+                        <span>⭐</span> INTERACTIVE PID ASSESSMENT • 5 QUESTIONS
+                    </div>
+
+                    <h1 class="font-display font-bold text-4xl sm:text-6xl xl:text-7xl text-slate-800 leading-tight tracking-tight drop-shadow-sm">
+                        5-MINUTE <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600">BODY CHALLENGE!</span>
+                    </h1>
+
+                    <p class="text-slate-600 font-extrabold text-lg sm:text-2xl mt-3 mb-5">
+                        Are you ready to show what you know?
+                    </p>
+
+                    <!-- Input Nama Murid Opsional (Ramah Sentuh / Bisa Dilewati) -->
+                    <div class="w-full max-w-md bg-white p-2.5 rounded-2xl border-2 border-sky-200 shadow-sm mb-6 flex items-center gap-2">
+                        <span class="text-2xl pl-2">📛</span>
+                        <input type="text" id="student-name-input" placeholder="Nama Murid (Opsional)..." class="w-full bg-transparent text-slate-800 font-bold text-base sm:text-lg focus:outline-none px-2 py-1" maxlength="25">
+                    </div>
+
+                    <!-- Tombol Besar START! -->
+                    <button onclick="startAssessment()" class="btn-3d btn-green text-white font-display font-bold text-3xl sm:text-4xl px-12 sm:px-16 py-4 sm:py-5 rounded-3xl flex items-center gap-4 animate-pulse-scale cursor-pointer">
+                        <span>START!</span>
+                        <span class="text-3xl sm:text-4xl">🚀</span>
+                    </button>
+                </div>
+
+                <!-- Kolom Kanan: Ilustrasi Karakter Anak & Bagian Tubuh + Bintang Beranimasi -->
+                <div class="flex-1 h-full max-h-[420px] sm:max-h-[480px] flex items-center justify-center relative">
+                    <!-- Bintang Dekorasi Animasi -->
+                    <div class="absolute top-2 left-6 text-4xl sm:text-5xl animate-bounce" style="animation-delay: 0.1s;">⭐</div>
+                    <div class="absolute bottom-6 left-4 text-3xl sm:text-4xl animate-pulse" style="animation-delay: 0.4s;">✨</div>
+                    <div class="absolute top-6 right-8 text-4xl sm:text-5xl animate-bounce" style="animation-delay: 0.3s;">🌟</div>
+                    <div class="absolute bottom-8 right-6 text-3xl sm:text-4xl animate-pulse" style="animation-delay: 0.6s;">💫</div>
+
+                    <!-- SVG Kartun Anak & Label Bagian Tubuh -->
+                    <div class="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-[2.5rem] border-4 border-sky-200 shadow-xl animate-float">
+                        <svg viewBox="0 0 420 340" class="w-64 sm:w-80 md:w-96 h-auto">
+                            <!-- Lingkaran Latar -->
+                            <circle cx="210" cy="175" r="145" fill="#e0f2fe" />
+                            <circle cx="210" cy="175" r="120" fill="#bae6fd" opacity="0.5" />
+
+                            <!-- Kaki (Legs) -->
+                            <rect x="172" y="225" width="26" height="65" rx="13" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+                            <rect x="222" y="225" width="26" height="65" rx="13" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+                            <!-- Sepatu -->
+                            <path d="M162 282 Q162 270 185 270 L198 270 Q204 270 204 282 L204 292 L162 292 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="3"/>
+                            <path d="M216 282 Q216 270 229 270 L242 270 Q258 270 258 282 L258 292 L216 292 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="3"/>
+
+                            <!-- Lengan & Tangan (Hands) -->
+                            <path d="M160 155 Q115 130 105 100" fill="none" stroke="#ffedd5" stroke-width="22" stroke-linecap="round"/>
+                            <path d="M160 155 Q115 130 105 100" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="103" cy="96" r="14" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+
+                            <path d="M260 155 Q305 130 315 100" fill="none" stroke="#ffedd5" stroke-width="22" stroke-linecap="round"/>
+                            <path d="M260 155 Q305 130 315 100" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="317" cy="96" r="14" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+
+                            <!-- Baju & Celana -->
+                            <rect x="165" y="195" width="90" height="40" rx="10" fill="#1e3a8a" stroke="#172554" stroke-width="3"/>
+                            <path d="M160 145 Q210 135 260 145 L265 205 L155 205 Z" fill="#3b82f6" stroke="#1d4ed8" stroke-width="3"/>
+                            <circle cx="210" cy="175" r="16" fill="#facc15" />
+
+                            <!-- Telinga (Ears) -->
+                            <circle cx="152" cy="95" r="14" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+                            <circle cx="268" cy="95" r="14" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+
+                            <!-- Kepala (Head) -->
+                            <circle cx="210" cy="92" r="56" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+                            <!-- Rambut -->
+                            <path d="M154 85 Q155 30 210 30 Q265 30 266 85 Q245 60 210 65 Q175 60 154 85 Z" fill="#451a03"/>
+                            <!-- Mata (Eyes) -->
+                            <circle cx="190" cy="88" r="7" fill="#1e293b"/>
+                            <circle cx="192" cy="86" r="2.5" fill="#ffffff"/>
+                            <circle cx="230" cy="88" r="7" fill="#1e293b"/>
+                            <circle cx="232" cy="86" r="2.5" fill="#ffffff"/>
+                            <!-- Pipi -->
+                            <ellipse cx="178" cy="102" rx="8" ry="5" fill="#fda4af" opacity="0.7"/>
+                            <ellipse cx="242" cy="102" rx="8" ry="5" fill="#fda4af" opacity="0.7"/>
+                            <!-- Hidung (Nose) -->
+                            <path d="M210 95 Q205 104 212 105" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+                            <!-- Mulut (Mouth) -->
+                            <path d="M196 116 Q210 130 224 116 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="2.5"/>
+
+                            <!-- Badge Kosakata Mengambang -->
+                            <g transform="translate(18, 35)">
+                                <rect width="76" height="28" rx="14" fill="#f59e0b"/>
+                                <text x="38" y="19" text-anchor="middle" fill="#fff" font-family="Fredoka" font-weight="bold" font-size="14">HEAD</text>
+                            </g>
+                            <g transform="translate(325, 35)">
+                                <rect width="76" height="28" rx="14" fill="#10b981"/>
+                                <text x="38" y="19" text-anchor="middle" fill="#fff" font-family="Fredoka" font-weight="bold" font-size="14">EYES</text>
+                            </g>
+                            <g transform="translate(15, 165)">
+                                <rect width="82" height="28" rx="14" fill="#8b5cf6"/>
+                                <text x="41" y="19" text-anchor="middle" fill="#fff" font-family="Fredoka" font-weight="bold" font-size="14">HANDS</text>
+                            </g>
+                            <g transform="translate(325, 225)">
+                                <rect width="76" height="28" rx="14" fill="#ec4899"/>
+                                <text x="38" y="19" text-anchor="middle" fill="#fff" font-family="Fredoka" font-weight="bold" font-size="14">LEGS</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. HALAMAN KUIS (QUESTION STAGE) -->
+            <section id="screen-quiz" class="hidden w-full h-full flex-col justify-between">
+                <!-- Judul Tipe Soal & Instruksi + Tombol Baca Audio -->
+                <div class="w-full flex flex-col sm:flex-row items-center justify-between bg-white px-5 py-3 rounded-2xl border-2 border-sky-100 shadow-sm gap-2 shrink-0">
+                    <div class="flex items-center gap-3">
+                        <span id="q-badge" class="bg-sky-500 text-white font-display font-bold px-3.5 py-1 rounded-xl text-base sm:text-lg">
+                            SOAL 1 / 5
+                        </span>
+                        <h2 id="q-title" class="font-display font-bold text-xl sm:text-2xl lg:text-3xl text-slate-800">
+                            Which part of the body is this?
+                        </h2>
+                    </div>
+
+                    <!-- Tombol Dengarkan Instruksi (TTS) -->
+                    <button onclick="speakCurrentInstruction()" class="btn-3d btn-amber text-amber-950 font-display font-bold px-4 py-2 rounded-xl text-sm sm:text-base flex items-center gap-2 shrink-0 cursor-pointer">
+                        <span class="text-xl">🔊</span>
+                        <span>LISTEN</span>
+                    </button>
+                </div>
+
+                <!-- Area Konten Soal Dinamis (Diisi via JS sesuai nomor soal 1-5) -->
+                <div id="question-body" class="flex-1 w-full flex items-center justify-center my-2 sm:my-3 overflow-hidden">
+                    <!-- Konten Soal Dirender Di Sini -->
+                </div>
+
+                <!-- Footer Bantuan / Petunjuk Singkat -->
+                <div id="question-hint-bar" class="w-full text-center py-1 text-slate-500 font-bold text-sm sm:text-base shrink-0">
+                    Sentuh jawaban yang benar pada layar!
+                </div>
+            </section>
+
+            <!-- 3. HALAMAN HASIL AKHIR (RESULTS SCREEN) -->
+            <section id="screen-result" class="hidden w-full h-full flex-col items-center justify-between py-1 sm:py-2 px-2 sm:px-6 animate-pop-in">
+                <!-- Bagian Atas: Banner Apresiasi & Bintang -->
+                <div class="text-center">
+                    <div id="result-stars" class="flex items-center justify-center gap-2 text-4xl sm:text-5xl mb-1">
+                        <span>⭐</span><span>⭐</span><span>⭐</span>
+                    </div>
+                    <h2 id="result-headline" class="font-display font-bold text-3xl sm:text-5xl text-slate-800 tracking-wide">
+                        AWESOME! 🌟
+                    </h2>
+                    <p id="result-subheadline" class="text-sky-600 font-extrabold text-lg sm:text-2xl">
+                        You did a great job!
+                    </p>
+                </div>
+
+                <!-- Kartu Tengah: Skor, Nama, Progress Bar, Jumlah Benar -->
+                <div class="w-full max-w-4xl bg-white rounded-3xl border-4 border-sky-200 p-4 sm:p-6 shadow-xl grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    <!-- Kolom 1: Skor Besar -->
+                    <div class="flex flex-col items-center justify-center bg-gradient-to-br from-amber-50 to-orange-100 rounded-2xl p-4 border-2 border-amber-300">
+                        <span class="text-amber-800 font-extrabold text-xs sm:text-sm uppercase tracking-wider">SKOR AKHIR</span>
+                        <div class="font-display font-bold text-5xl sm:text-6xl text-amber-500 my-1 drop-shadow-sm">
+                            <span id="final-score">100</span>
+                        </div>
+                        <span class="text-amber-700 font-bold text-xs sm:text-sm">Maksimal 100 Poin</span>
+                    </div>
+
+                    <!-- Kolom 2 & 3: Detail Murid, Jumlah Benar & Progress Bar -->
+                    <div class="md:col-span-2 flex flex-col justify-between gap-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-slate-100 pb-2">
+                            <div>
+                                <span class="text-xs font-bold text-slate-400 uppercase block">Nama Murid</span>
+                                <span id="result-student-name" class="font-display font-bold text-xl sm:text-2xl text-slate-800">Hebat Class 3!</span>
+                            </div>
+                            <div class="bg-emerald-100 text-emerald-800 px-4 py-1.5 rounded-2xl font-display font-bold text-lg sm:text-xl border-2 border-emerald-300">
+                                Benar: <span id="final-correct-count">5</span> / 5 Soal
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div>
+                            <div class="flex justify-between text-xs sm:text-sm font-extrabold text-slate-600 mb-1">
+                                <span>Tingkat Penguasaan Materi</span>
+                                <span id="final-percent">100%</span>
+                            </div>
+                            <div class="w-full h-6 bg-slate-200 rounded-full overflow-hidden p-1 shadow-inner">
+                                <div id="final-progress-bar" class="h-full bg-gradient-to-r from-emerald-400 to-green-500 rounded-full transition-all duration-1000" style="width: 100%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Pesan Penutup Positif -->
+                        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl px-4 py-2 text-center">
+                            <p class="font-display font-bold text-sky-800 text-base sm:text-xl">
+                                "Great job! You know your body parts!" 🎉
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rekap 7 Kosakata yang Dipelajari (Bisa diklik untuk dengar pengucapannya!) -->
+                <div class="w-full max-w-4xl">
+                    <p class="text-center text-xs sm:text-sm font-extrabold text-slate-500 mb-1.5 uppercase tracking-wider">
+                        🔊 Sentuh kosakata di bawah untuk mendengarkan pengucapannya:
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center gap-2">
+                        <button onclick="speakWord('Head')" class="bg-white hover:bg-sky-50 active:scale-95 border-2 border-sky-300 text-sky-800 font-display font-bold px-3.5 py-1.5 rounded-xl text-sm sm:text-lg shadow-sm cursor-pointer">🗣️ HEAD</button>
+                        <button onclick="speakWord('Eyes')" class="bg-white hover:bg-emerald-50 active:scale-95 border-2 border-emerald-300 text-emerald-800 font-display font-bold px-3.5 py-1.5 rounded-xl text-sm sm:text-lg shadow-sm cursor-pointer">👀 EYES</button>
+                        <button onclick="speakWord('Ears')" class="bg-white hover:bg-amber-50 active:scale-95 border-2 border-amber-300 text-amber-800 font-display font-bold px-3.5 py-1.5 rounded-xl text-sm sm:text-lg shadow-sm cursor-pointer">👂 EARS</button>
+                        <button onclick="speakWord('Nose')" class="bg-white hover:bg-rose-50 active:scale-95 border-2 border-rose-300 text-rose-800 font-display font-bold px-3.5 py-1.5 rounded-xl text-sm sm:text-lg shadow-sm cursor-pointer">👃 NOSE</button>
+                        <button onclick="speakWord('Mouth')" class="bg-white hover:bg-purple-50 active:scale-95 border-2 border-purple-300 text-purple-800 font-display font-bold px-3.5 py-1.5 rounded-xl text-sm sm:text-lg shadow-sm cursor-pointer">👄 MOUTH</button>
+                        <button onclick="speakWord('Hands')" class="bg-white hover:bg-indigo-50 active:scale-95 border-2 border-indigo-300 text-indigo-800 font-display font-bold px-3.5 py-1.5 rounded-xl text-sm sm:text-lg shadow-sm cursor-pointer">🙌 HANDS</button>
+                        <button onclick="speakWord('Legs')" class="bg-white hover:bg-teal-50 active:scale-95 border-2 border-teal-300 text-teal-800 font-display font-bold px-3.5 py-1.5 rounded-xl text-sm sm:text-lg shadow-sm cursor-pointer">🦵 LEGS</button>
+                    </div>
+                </div>
+
+                <!-- Tombol Navigasi Akhir: PLAY AGAIN & HOME -->
+                <div class="flex items-center justify-center gap-4 sm:gap-6 mt-1">
+                    <button onclick="startAssessment()" class="btn-3d btn-green text-white font-display font-bold text-xl sm:text-2xl px-8 py-3 rounded-2xl flex items-center gap-2 cursor-pointer">
+                        <span>🔄</span>
+                        <span>PLAY AGAIN</span>
+                    </button>
+                    <button onclick="goHome()" class="btn-3d btn-blue text-white font-display font-bold text-xl sm:text-2xl px-8 py-3 rounded-2xl flex items-center gap-2 cursor-pointer">
+                        <span>🏠</span>
+                        <span>HOME</span>
+                    </button>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ==================== OVERLAY FEEDBACK POPUP (BENAR / SALAH) ==================== -->
+        <div id="feedback-overlay" class="hidden absolute inset-0 bg-slate-900/50 backdrop-blur-xs z-40 items-center justify-center p-4">
+            <div id="feedback-card" class="bg-white rounded-[2.5rem] p-6 sm:p-8 max-w-md w-full text-center border-8 border-emerald-400 shadow-2xl animate-pop-in">
+                <div id="feedback-icon" class="text-6xl sm:text-7xl mb-3">🌟</div>
+                <h3 id="feedback-title" class="font-display font-bold text-3xl sm:text-4xl text-emerald-600 mb-2">
+                    Great job!
+                </h3>
+                <p id="feedback-desc" class="text-slate-600 font-extrabold text-lg sm:text-xl mb-5">
+                    It is a NOSE! (+20 Poin)
+                </p>
+                <button onclick="proceedNextQuestion()" id="btn-next-question" class="btn-3d btn-blue w-full text-white font-display font-bold text-2xl py-3.5 rounded-2xl cursor-pointer">
+                    NEXT ➡️
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        /* ==================== DATA & KONFIGURASI ASESMEN ==================== */
+        const TOTAL_ASSESSMENT_SECONDS = 300; // 5 menit = 300 detik
+        const QUESTIONS_CONFIG = [
+            {
+                id: 1,
+                type: 'LOOK_CHOOSE',
+                duration: 45,
+                badge: 'SOAL 1 / 5 • LOOK & CHOOSE',
+                prompt: 'Which part of the body is this?',
+                speechText: 'Question 1. Which part of the body is this?',
+                hint: 'Perhatikan gambar bagian tubuh di sebelah kiri, lalu sentuh jawaban A, B, atau C!',
+                correctFeedback: 'Great job!',
+                wrongFeedback: "Let's try to remember!",
+                explanation: 'Gambar tersebut adalah hidung (NOSE).'
+            },
+            {
+                id: 2,
+                type: 'TOUCH_BODY',
+                duration: 45,
+                badge: 'SOAL 2 / 5 • TOUCH THE BODY',
+                prompt: 'Touch your ears!',
+                speechText: 'Question 2. Touch your ears!',
+                hint: 'Sentuh gambar TELINGA (Ears) pada karakter anak di layar!',
+                correctFeedback: 'Awesome! 🌟',
+                wrongFeedback: 'Oops! Look at the glowing hint on the ears!',
+                explanation: 'Ears artinya telinga.'
+            },
+            {
+                id: 3,
+                type: 'MATCH_WORD',
+                duration: 45,
+                badge: 'SOAL 3 / 5 • MATCH THE WORD',
+                prompt: 'Match the picture with the correct word!',
+                speechText: 'Question 3. Match the picture with the correct word!',
+                hint: 'Cocokkan gambar MATA dengan kata Bahasa Inggris yang tepat!',
+                correctFeedback: 'Wonderful! You matched it!',
+                wrongFeedback: 'Nice try! Look closely at the eyes.',
+                explanation: 'Gambar mata dalam Bahasa Inggris adalah EYES.'
+            },
+            {
+                id: 4,
+                type: 'LISTEN_CHOOSE',
+                duration: 45,
+                badge: 'SOAL 4 / 5 • LISTEN & CHOOSE',
+                prompt: 'Listen & Choose: "Raise your hands!"',
+                speechText: 'Question 4. Listen carefully. Raise your hands!',
+                hint: 'Dengarkan instruksi suara, lalu pilih gambar anak yang mengangkat tangan!',
+                correctFeedback: 'Super! Raise your hands!',
+                wrongFeedback: "Let's listen again! Raise your hands means angkat tangan.",
+                explanation: '"Raise your hands!" artinya angkat tanganmu.'
+            },
+            {
+                id: 5,
+                type: 'COMPLETE_BODY',
+                duration: 60,
+                badge: 'SOAL 5 / 5 • COMPLETE THE BODY',
+                prompt: 'What is missing?',
+                speechText: 'Question 5. Look at the body. What is missing?',
+                hint: 'Perhatikan kotak tanda tanya (?) di bagian bawah tubuh anak. Kata apa yang hilang?',
+                correctFeedback: 'Fantastic! Complete!',
+                wrongFeedback: 'Good effort! Look at the bottom part of the body (Legs).',
+                explanation: 'Bagian tubuh yang belum diberi label adalah kaki (LEGS).'
+            }
+        ];
+
+        /* ==================== STATE APLIKASI ==================== */
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+        let questionResults = [null, null, null, null, null]; // null, true, false
+        let globalTimeLeft = TOTAL_ASSESSMENT_SECONDS;
+        let questionTimeLeft = 45;
+        let globalTimerInterval = null;
+        let questionTimerInterval = null;
+        let audioEnabled = true;
+        let isAnsweringLocked = false;
+        let q2WrongAttempts = 0;
+
+        /* ==================== AUDIO & SPEECH SYNTHESIS (TONE.JS + WEB SPEECH) ==================== */
+        let synth = null;
+
+        function initAudio() {
+            if (!synth && typeof Tone !== 'undefined') {
+                Tone.start();
+                synth = new Tone.PolySynth(Tone.Synth).toDestination();
+                synth.volume.value = -6;
+            }
+        }
+
+        function playSoundEffect(type) {
+            if (!audioEnabled) return;
+            try {
+                initAudio();
+                if (!synth) return;
+                const now = Tone.now();
+                if (type === 'click') {
+                    synth.triggerAttackRelease('C5', '16n', now);
+                } else if (type === 'correct') {
+                    synth.triggerAttackRelease(['C5', 'E5', 'G5'], '8n', now);
+                    synth.triggerAttackRelease(['C6'], '4n', now + 0.15);
+                } else if (type === 'wrong') {
+                    synth.triggerAttackRelease(['E4', 'Eb4'], '8n', now);
+                    synth.triggerAttackRelease(['D4'], '4n', now + 0.15);
+                } else if (type === 'finish') {
+                    synth.triggerAttackRelease(['C5', 'E5', 'G5', 'C6'], '4n', now);
+                }
+            } catch (e) {
+                console.warn('Audio error:', e);
+            }
+        }
+
+        function speakText(text) {
+            if (!audioEnabled) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.92; // Sedikit lebih lambat agar jelas untuk kelas 3 SD
+                utterance.pitch = 1.1;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function speakWord(word) {
+            playSoundEffect('click');
+            speakText(word);
+        }
+
+        function speakCurrentInstruction() {
+            playSoundEffect('click');
+            const q = QUESTIONS_CONFIG[currentQuestionIndex];
+            if (q) speakText(q.speechText);
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const btn = document.getElementById('btn-audio-toggle');
+            btn.textContent = audioEnabled ? '🔊' : '🔇';
+            if (!audioEnabled && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        /* ==================== NAVIGASI LAYAR ==================== */
+        function showScreen(screenId) {
+            ['screen-start', 'screen-quiz', 'screen-result'].forEach(id => {
+                const el = document.getElementById(id);
+                if (id === screenId) {
+                    el.classList.remove('hidden');
+                    el.classList.add('flex');
+                } else {
+                    el.classList.add('hidden');
+                    el.classList.remove('flex');
+                }
+            });
+
+            // Atur visibilitas elemen header
+            const progressContainer = document.getElementById('quiz-progress-container');
+            const qTimerBadge = document.getElementById('question-timer-badge');
+            if (screenId === 'screen-quiz') {
+                progressContainer.classList.remove('hidden');
+                progressContainer.classList.add('md:flex');
+                qTimerBadge.classList.remove('hidden');
+                qTimerBadge.classList.add('flex');
+            } else {
+                progressContainer.classList.add('hidden');
+                progressContainer.classList.remove('md:flex');
+                qTimerBadge.classList.add('hidden');
+                qTimerBadge.classList.remove('flex');
+            }
+        }
+
+        function goHome() {
+            playSoundEffect('click');
+            stopAllTimers();
+            globalTimeLeft = TOTAL_ASSESSMENT_SECONDS;
+            updateGlobalTimerDisplay();
+            document.getElementById('feedback-overlay').classList.add('hidden');
+            document.getElementById('feedback-overlay').classList.remove('flex');
+            showScreen('screen-start');
+        }
+
+        /* ==================== TIMER MANAGEMENT ==================== */
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function updateGlobalTimerDisplay() {
+            const el = document.getElementById('global-timer-text');
+            el.textContent = formatTime(globalTimeLeft);
+            const badge = document.getElementById('global-timer-badge');
+            if (globalTimeLeft <= 30) {
+                badge.classList.add('animate-pulse', 'bg-rose-600', 'text-white');
+                badge.classList.remove('bg-rose-50', 'text-rose-600');
+            } else {
+                badge.classList.remove('animate-pulse', 'bg-rose-600', 'text-white');
+                badge.classList.add('bg-rose-50', 'text-rose-600');
+            }
+        }
+
+        function startGlobalTimer() {
+            clearInterval(globalTimerInterval);
+            globalTimerInterval = setInterval(() => {
+                if (globalTimeLeft > 0) {
+                    globalTimeLeft--;
+                    updateGlobalTimerDisplay();
+                } else {
+                    // Waktu 5 menit habis -> langsung ke halaman hasil
+                    finishAssessment();
+                }
+            }, 1000);
+        }
+
+        function startQuestionTimer(duration) {
+            clearInterval(questionTimerInterval);
+            questionTimeLeft = duration;
+            const textEl = document.getElementById('question-timer-text');
+            textEl.textContent = `${questionTimeLeft}s`;
+
+            questionTimerInterval = setInterval(() => {
+                if (isAnsweringLocked) return;
+                if (questionTimeLeft > 0) {
+                    questionTimeLeft--;
+                    textEl.textContent = `${questionTimeLeft}s`;
+                } else {
+                    // Waktu soal habis
+                    clearInterval(questionTimerInterval);
+                    handleAnswer(false, "Time's up! Let's keep going!");
+                }
+            }, 1000);
+        }
+
+        function stopAllTimers() {
+            clearInterval(globalTimerInterval);
+            clearInterval(questionTimerInterval);
+        }
+
+        /* ==================== MULAI & KONTROL KUIS ==================== */
+        function startAssessment() {
+            initAudio();
+            playSoundEffect('click');
+
+            // Reset State
+            currentQuestionIndex = 0;
+            score = 0;
+            correctCount = 0;
+            questionResults = [null, null, null, null, null];
+            globalTimeLeft = TOTAL_ASSESSMENT_SECONDS;
+            isAnsweringLocked = false;
+
+            updateGlobalTimerDisplay();
+            startGlobalTimer();
+            showScreen('screen-quiz');
+            renderQuestion(0);
+        }
+
+        function renderProgressDots() {
+            const container = document.getElementById('progress-dots');
+            container.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const dot = document.createElement('div');
+                let classes = 'w-8 h-8 rounded-full font-display font-bold text-sm flex items-center justify-center border-2 transition-all ';
+                if (i === currentQuestionIndex) {
+                    classes += 'bg-sky-500 border-sky-600 text-white scale-110 shadow-md';
+                } else if (questionResults[i] === true) {
+                    classes += 'bg-emerald-500 border-emerald-600 text-white';
+                } else if (questionResults[i] === false) {
+                    classes += 'bg-rose-400 border-rose-500 text-white';
+                } else {
+                    classes += 'bg-white border-slate-300 text-slate-400';
+                }
+                dot.className = classes;
+                dot.textContent = i + 1;
+                container.appendChild(dot);
+            }
+        }
+
+        function renderQuestion(index) {
+            isAnsweringLocked = false;
+            q2WrongAttempts = 0;
+            const q = QUESTIONS_CONFIG[index];
+
+            document.getElementById('q-badge').textContent = q.badge;
+            document.getElementById('q-title').textContent = q.prompt;
+            document.getElementById('question-hint-bar').textContent = q.hint;
+
+            renderProgressDots();
+            startQuestionTimer(q.duration);
+
+            const bodyContainer = document.getElementById('question-body');
+            bodyContainer.innerHTML = '';
+
+            if (q.type === 'LOOK_CHOOSE') {
+                renderQuestion1(bodyContainer);
+            } else if (q.type === 'TOUCH_BODY') {
+                renderQuestion2(bodyContainer);
+            } else if (q.type === 'MATCH_WORD') {
+                renderQuestion3(bodyContainer);
+            } else if (q.type === 'LISTEN_CHOOSE') {
+                renderQuestion4(bodyContainer);
+            } else if (q.type === 'COMPLETE_BODY') {
+                renderQuestion5(bodyContainer);
+            }
+
+            // Otomatis bacakan instruksi setelah jeda singkat
+            setTimeout(() => {
+                speakText(q.speechText);
+            }, 350);
+        }
+
+        /* ==================== RENDER SOAL 1: LOOK & CHOOSE (NOSE) ==================== */
+        function renderQuestion1(container) {
+            container.innerHTML = `
+                <div class="w-full max-w-5xl h-full grid grid-cols-1 md:grid-cols-2 gap-6 items-center px-2 animate-pop-in">
+                    <!-- Ilustrasi Hidung yang Jelas -->
+                    <div class="bg-white rounded-[2rem] border-4 border-amber-200 p-4 sm:p-6 shadow-lg flex flex-col items-center justify-center h-full max-h-[360px]">
+                        <svg viewBox="0 0 260 240" class="w-48 sm:w-64 h-auto">
+                            <circle cx="130" cy="120" r="105" fill="#fef3c7" />
+                            <!-- Kontur Wajah Fokus Hidung -->
+                            <path d="M55 60 Q130 40 205 60 L205 185 Q130 225 55 185 Z" fill="#ffedd5" stroke="#fdba74" stroke-width="3"/>
+                            <!-- Mata samar di atas agar konteks wajah jelas -->
+                            <path d="M78 72 Q92 62 106 72" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M154 72 Q168 62 182 72" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+                            <!-- Lingkaran Sorotan pada Hidung -->
+                            <circle cx="130" cy="128" r="46" fill="#fde68a" stroke="#f59e0b" stroke-width="4" stroke-dasharray="8 6"/>
+                            <!-- Gambar Hidung Kartun Jelas -->
+                            <path d="M130 88 L116 132 Q112 146 130 146 Q148 146 144 132" fill="#fed7aa" stroke="#9a3412" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="121" cy="139" r="3.5" fill="#7c2d12"/>
+                            <circle cx="139" cy="139" r="3.5" fill="#7c2d12"/>
+                            <!-- Kilau -->
+                            <path d="M126 102 L122 122" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                        <span class="mt-2 bg-amber-100 text-amber-800 font-display font-bold px-4 py-1 rounded-full text-sm sm:text-base">
+                            Look at the picture! 👀
+                        </span>
+                    </div>
+
+                    <!-- Pilihan Jawaban A, B, C -->
+                    <div class="flex flex-col gap-4 justify-center">
+                        <button onclick="checkQ1('A')" class="btn-3d bg-white hover:bg-sky-50 border-4 border-sky-300 rounded-3xl p-4 sm:p-5 flex items-center gap-5 text-left cursor-pointer">
+                            <span class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-sky-500 text-white font-display font-bold text-2xl sm:text-3xl flex items-center justify-center shrink-0">A</span>
+                            <span class="font-display font-bold text-2xl sm:text-4xl text-slate-800">Eyes</span>
+                        </button>
+
+                        <button onclick="checkQ1('B')" class="btn-3d bg-white hover:bg-sky-50 border-4 border-sky-300 rounded-3xl p-4 sm:p-5 flex items-center gap-5 text-left cursor-pointer">
+                            <span class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-sky-500 text-white font-display font-bold text-2xl sm:text-3xl flex items-center justify-center shrink-0">B</span>
+                            <span class="font-display font-bold text-2xl sm:text-4xl text-slate-800">Nose</span>
+                        </button>
+
+                        <button onclick="checkQ1('C')" class="btn-3d bg-white hover:bg-sky-50 border-4 border-sky-300 rounded-3xl p-4 sm:p-5 flex items-center gap-5 text-left cursor-pointer">
+                            <span class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-sky-500 text-white font-display font-bold text-2xl sm:text-3xl flex items-center justify-center shrink-0">C</span>
+                            <span class="font-display font-bold text-2xl sm:text-4xl text-slate-800">Hands</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkQ1(choice) {
+            if (isAnsweringLocked) return;
+            speakWord(choice === 'A' ? 'Eyes' : choice === 'B' ? 'Nose' : 'Hands');
+            const isCorrect = (choice === 'B');
+            handleAnswer(isCorrect);
+        }
+
+        /* ==================== RENDER SOAL 2: TOUCH THE BODY (EARS) ==================== */
+        function renderQuestion2(container) {
+            container.innerHTML = `
+                <div class="w-full max-w-4xl h-full flex flex-col sm:flex-row items-center justify-center gap-6 px-2 animate-pop-in">
+                    <!-- Kartu Instruksi Besar -->
+                    <div class="bg-amber-50 border-4 border-amber-300 rounded-3xl p-5 sm:p-6 text-center max-w-xs shadow-md">
+                        <div class="text-5xl mb-2">👆</div>
+                        <p class="text-amber-800 font-extrabold text-sm uppercase tracking-wider mb-1">INSTRUCTION</p>
+                        <h3 class="font-display font-bold text-3xl sm:text-4xl text-slate-800 mb-3">
+                            "Touch your <span class="text-rose-600 underline decoration-wavy">ears</span>!"
+                        </h3>
+                        <p id="q2-helper-text" class="text-slate-600 font-bold text-sm sm:text-base">
+                            Sentuh gambar telinga kiri atau kanan pada karakter!
+                        </p>
+                    </div>
+
+                    <!-- Karakter Anak dengan Area Sentuh (Hotspots) -->
+                    <div class="bg-white rounded-[2.5rem] border-4 border-sky-200 p-3 sm:p-4 shadow-xl relative flex items-center justify-center">
+                        <svg viewBox="0 0 360 350" class="w-64 sm:w-80 md:w-[340px] h-auto">
+                            <!-- Background -->
+                            <circle cx="180" cy="175" r="160" fill="#f0f9ff"/>
+
+                            <!-- LEGS (Hotspot Salah) -->
+                            <g class="body-hotspot" onclick="checkQ2('legs')">
+                                <rect x="142" y="240" width="26" height="65" rx="13" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+                                <rect x="192" y="240" width="26" height="65" rx="13" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+                                <rect x="135" y="295" width="38" height="18" rx="9" fill="#3b82f6" stroke="#1d4ed8" stroke-width="3"/>
+                                <rect x="187" y="295" width="38" height="18" rx="9" fill="#3b82f6" stroke="#1d4ed8" stroke-width="3"/>
+                            </g>
+
+                            <!-- HANDS (Hotspot Salah) -->
+                            <g class="body-hotspot" onclick="checkQ2('hands')">
+                                <path d="M125 170 L80 205" stroke="#ffedd5" stroke-width="20" stroke-linecap="round"/>
+                                <path d="M125 170 L80 205" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+                                <circle cx="76" cy="208" r="14" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+
+                                <path d="M235 170 L280 205" stroke="#ffedd5" stroke-width="20" stroke-linecap="round"/>
+                                <path d="M235 170 L280 205" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+                                <circle cx="284" cy="208" r="14" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+                            </g>
+
+                            <!-- Baju -->
+                            <path d="M125 160 Q180 150 235 160 L242 245 L118 245 Z" fill="#10b981" stroke="#047857" stroke-width="3"/>
+
+                            <!-- EARS - TELINGA KIRI & KANAN (TARGET JAWABAN BENAR - Area sentuh diperbesar agar mudah di layar PID) -->
+                            <g class="body-hotspot" onclick="checkQ2('ears')">
+                                <!-- Lingkaran Petunjuk Visual (Muncul jika murid salah menyentuh bagian lain) -->
+                                <circle id="ear-hint-left" cx="105" cy="100" r="30" fill="none" stroke="#f59e0b" stroke-width="5" class="hidden hint-ring"/>
+                                <circle id="ear-hint-right" cx="255" cy="100" r="30" fill="none" stroke="#f59e0b" stroke-width="5" class="hidden hint-ring"/>
+
+                                <!-- Area Sentuh Transparan Besar -->
+                                <circle cx="105" cy="100" r="32" fill="transparent"/>
+                                <circle cx="255" cy="100" r="32" fill="transparent"/>
+
+                                <!-- Gambar Telinga -->
+                                <circle cx="110" cy="100" r="18" fill="#ffedd5" stroke="#9a3412" stroke-width="3.5"/>
+                                <path d="M112 92 Q104 100 112 108" fill="none" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+
+                                <circle cx="250" cy="100" r="18" fill="#ffedd5" stroke="#9a3412" stroke-width="3.5"/>
+                                <path d="M248 92 Q256 100 248 108" fill="none" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+                            </g>
+
+                            <!-- HEAD / FACE (Hotspot Salah) -->
+                            <g class="body-hotspot" onclick="checkQ2('head')">
+                                <circle cx="180" cy="96" r="64" fill="#ffedd5" stroke="#9a3412" stroke-width="3"/>
+                                <!-- Rambut Pita -->
+                                <path d="M116 90 Q120 26 180 26 Q240 26 244 90 Q215 62 180 68 Q145 62 116 90 Z" fill="#78350f"/>
+                                <!-- Mata -->
+                                <circle cx="158" cy="92" r="7.5" fill="#1e293b"/>
+                                <circle cx="160" cy="90" r="2.5" fill="#fff"/>
+                                <circle cx="202" cy="92" r="7.5" fill="#1e293b"/>
+                                <circle cx="204" cy="90" r="2.5" fill="#fff"/>
+                                <!-- Hidung & Mulut -->
+                                <path d="M180 100 Q175 109 182 110" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M165 122 Q180 136 195 122" fill="none" stroke="#9a3412" stroke-width="3.5" stroke-linecap="round"/>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkQ2(part) {
+            if (isAnsweringLocked) return;
+            if (part === 'ears') {
+                speakWord('Ears! Great job!');
+                handleAnswer(true);
+            } else {
+                q2WrongAttempts++;
+                playSoundEffect('wrong');
+                // Tampilkan petunjuk visual ramah pada telinga jika percobaan pertama salah
+                if (q2WrongAttempts === 1) {
+                    document.getElementById('ear-hint-left').classList.remove('hidden');
+                    document.getElementById('ear-hint-right').classList.remove('hidden');
+                    const helper = document.getElementById('q2-helper-text');
+                    helper.innerHTML = `<span class="text-amber-600 font-extrabold">💡 Petunjuk:</span> Lihat lingkaran berkedip di sisi kepala! Sentuh bagian itu!`;
+                    speakText('Try again! Touch your ears!');
+                } else {
+                    handleAnswer(false);
+                }
+            }
+        }
+
+        /* ==================== RENDER SOAL 3: MATCH THE WORD (EYES) ==================== */
+        function renderQuestion3(container) {
+            container.innerHTML = `
+                <div class="w-full max-w-4xl h-full flex flex-col items-center justify-center gap-5 px-2 animate-pop-in">
+                    <!-- Kartu Gambar Mata -->
+                    <div class="bg-white rounded-[2rem] border-4 border-emerald-300 px-8 py-4 shadow-lg flex flex-col items-center">
+                        <svg viewBox="0 0 320 150" class="w-60 sm:w-80 h-auto">
+                            <!-- Alis -->
+                            <path d="M45 42 Q85 22 125 40" fill="none" stroke="#451a03" stroke-width="8" stroke-linecap="round"/>
+                            <path d="M195 40 Q235 22 275 42" fill="none" stroke="#451a03" stroke-width="8" stroke-linecap="round"/>
+
+                            <!-- Mata Kiri -->
+                            <ellipse cx="85" cy="85" rx="45" ry="32" fill="#ffffff" stroke="#1e293b" stroke-width="5"/>
+                            <circle cx="85" cy="85" r="20" fill="#0284c7"/>
+                            <circle cx="85" cy="85" r="10" fill="#0f172a"/>
+                            <circle cx="78" cy="78" r="5" fill="#ffffff"/>
+
+                            <!-- Mata Kanan -->
+                            <ellipse cx="235" cy="85" rx="45" ry="32" fill="#ffffff" stroke="#1e293b" stroke-width="5"/>
+                            <circle cx="235" cy="85" r="20" fill="#0284c7"/>
+                            <circle cx="235" cy="85" r="10" fill="#0f172a"/>
+                            <circle cx="228" cy="78" r="5" fill="#ffffff"/>
+                        </svg>
+                    </div>
+
+                    <!-- 3 Pilihan Kata Besar -->
+                    <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                        <button onclick="checkQ3('HEAD')" class="btn-3d btn-purple text-white font-display font-bold text-3xl sm:text-4xl py-5 sm:py-6 rounded-3xl cursor-pointer">
+                            HEAD
+                        </button>
+                        <button onclick="checkQ3('EYES')" class="btn-3d btn-green text-white font-display font-bold text-3xl sm:text-4xl py-5 sm:py-6 rounded-3xl cursor-pointer">
+                            EYES
+                        </button>
+                        <button onclick="checkQ3('LEGS')" class="btn-3d btn-amber text-white font-display font-bold text-3xl sm:text-4xl py-5 sm:py-6 rounded-3xl cursor-pointer">
+                            LEGS
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkQ3(word) {
+            if (isAnsweringLocked) return;
+            speakWord(word);
+            handleAnswer(word === 'EYES');
+        }
+
+        /* ==================== RENDER SOAL 4: LISTEN & CHOOSE (RAISE YOUR HANDS!) ==================== */
+        function renderQuestion4(container) {
+            container.innerHTML = `
+                <div class="w-full max-w-5xl h-full flex flex-col items-center justify-center gap-4 px-2 animate-pop-in">
+                    <!-- Banner Audio Besar yang Bisa Ditekan Ulang -->
+                    <button onclick="speakWord('Raise your hands!')" class="bg-sky-100 hover:bg-sky-200 active:scale-95 border-4 border-sky-400 rounded-3xl px-6 py-3 flex items-center gap-4 shadow-md cursor-pointer transition">
+                        <span class="text-3xl sm:text-4xl animate-bounce">🔊</span>
+                        <div class="text-left">
+                            <span class="text-xs font-extrabold text-sky-700 uppercase block">Sentuh untuk mendengarkan lagi:</span>
+                            <span class="font-display font-bold text-2xl sm:text-3xl text-sky-950">"Raise your hands!"</span>
+                        </div>
+                    </button>
+
+                    <!-- 3 Pilihan Gambar Aksi Anak -->
+                    <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 flex-1 max-h-[300px]">
+                        
+                        <!-- Pilihan 1: Anak Mengangkat Tangan (BENAR) -->
+                        <button onclick="checkQ4('hands')" class="btn-3d bg-white hover:bg-emerald-50 border-4 border-sky-300 rounded-3xl p-3 flex flex-col items-center justify-between cursor-pointer">
+                            <svg viewBox="0 0 200 180" class="w-36 sm:w-44 h-auto">
+                                <circle cx="100" cy="95" r="75" fill="#e0f2fe"/>
+                                <!-- Kedua Tangan Diangkat ke Atas! -->
+                                <path d="M72 115 L45 45" stroke="#ffedd5" stroke-width="14" stroke-linecap="round"/>
+                                <path d="M72 115 L45 45" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+                                <circle cx="43" cy="40" r="10" fill="#ffedd5" stroke="#9a3412" stroke-width="2.5"/>
+
+                                <path d="M128 115 L155 45" stroke="#ffedd5" stroke-width="14" stroke-linecap="round"/>
+                                <path d="M128 115 L155 45" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+                                <circle cx="157" cy="40" r="10" fill="#ffedd5" stroke="#9a3412" stroke-width="2.5"/>
+
+                                <!-- Baju -->
+                                <rect x="70" y="110" width="60" height="55" rx="12" fill="#22c55e" stroke="#15803d" stroke-width="2.5"/>
+                                <!-- Kepala -->
+                                <circle cx="100" cy="78" r="32" fill="#ffedd5" stroke="#9a3412" stroke-width="2.5"/>
+                                <path d="M68 75 Q70 42 100 42 Q130 42 132 75 Q115 58 100 62 Q85 58 68 75 Z" fill="#451a03"/>
+                                <circle cx="90" cy="76" r="4" fill="#1e293b"/>
+                                <circle cx="110" cy="76" r="4" fill="#1e293b"/>
+                                <path d="M90 90 Q100 100 110 90" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+                            </svg>
+                            <span class="bg-sky-100 text-sky-900 font-display font-bold px-4 py-1 rounded-xl text-base sm:text-lg w-full text-center">OPTION A</span>
+                        </button>
+
+                        <!-- Pilihan 2: Anak Menunjuk Hidung (SALAH) -->
+                        <button onclick="checkQ4('nose')" class="btn-3d bg-white hover:bg-emerald-50 border-4 border-sky-300 rounded-3xl p-3 flex flex-col items-center justify-between cursor-pointer">
+                            <svg viewBox="0 0 200 180" class="w-36 sm:w-44 h-auto">
+                                <circle cx="100" cy="95" r="75" fill="#fef3c7"/>
+                                <!-- Baju -->
+                                <rect x="70" y="110" width="60" height="55" rx="12" fill="#f59e0b" stroke="#b45309" stroke-width="2.5"/>
+                                <!-- Kepala -->
+                                <circle cx="100" cy="78" r="32" fill="#ffedd5" stroke="#9a3412" stroke-width="2.5"/>
+                                <path d="M68 75 Q70 42 100 42 Q130 42 132 75 Q115 58 100 62 Q85 58 68 75 Z" fill="#451a03"/>
+                                <circle cx="90" cy="74" r="4" fill="#1e293b"/>
+                                <circle cx="110" cy="74" r="4" fill="#1e293b"/>
+                                <path d="M92 92 Q100 98 108 92" fill="none" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+                                <!-- Tangan Menunjuk Hidung -->
+                                <path d="M72 125 L100 84" stroke="#ffedd5" stroke-width="12" stroke-linecap="round"/>
+                                <path d="M72 125 L100 84" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+                                <circle cx="100" cy="82" r="7" fill="#ef4444"/>
+                            </svg>
+                            <span class="bg-sky-100 text-sky-900 font-display font-bold px-4 py-1 rounded-xl text-base sm:text-lg w-full text-center">OPTION B</span>
+                        </button>
+
+                        <!-- Pilihan 3: Anak Memegang Kepala (SALAH) -->
+                        <button onclick="checkQ4('head')" class="btn-3d bg-white hover:bg-emerald-50 border-4 border-sky-300 rounded-3xl p-3 flex flex-col items-center justify-between cursor-pointer">
+                            <svg viewBox="0 0 200 180" class="w-36 sm:w-44 h-auto">
+                                <circle cx="100" cy="95" r="75" fill="#f3e8ff"/>
+                                <!-- Baju -->
+                                <rect x="70" y="110" width="60" height="55" rx="12" fill="#a855f7" stroke="#6b21a8" stroke-width="2.5"/>
+                                <!-- Kepala -->
+                                <circle cx="100" cy="78" r="32" fill="#ffedd5" stroke="#9a3412" stroke-width="2.5"/>
+                                <path d="M68 75 Q70 42 100 42 Q130 42 132 75 Q115 58 100 62 Q85 58 68 75 Z" fill="#451a03"/>
+                                <circle cx="90" cy="76" r="4" fill="#1e293b"/>
+                                <circle cx="110" cy="76" r="4" fill="#1e293b"/>
+                                <path d="M92 90 Q100 98 108 90" fill="none" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+                                <!-- Kedua Tangan Memegang Atas Kepala -->
+                                <path d="M70 118 Q50 75 78 46" fill="none" stroke="#ffedd5" stroke-width="12" stroke-linecap="round"/>
+                                <path d="M70 118 Q50 75 78 46" fill="none" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+                                <path d="M130 118 Q150 75 122 46" fill="none" stroke="#ffedd5" stroke-width="12" stroke-linecap="round"/>
+                                <path d="M130 118 Q150 75 122 46" fill="none" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+                            </svg>
+                            <span class="bg-sky-100 text-sky-900 font-display font-bold px-4 py-1 rounded-xl text-base sm:text-lg w-full text-center">OPTION C</span>
+                        </button>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkQ4(action) {
+            if (isAnsweringLocked) return;
+            handleAnswer(action === 'hands');
+        }
+
+        /* ==================== RENDER SOAL 5: COMPLETE THE BODY (LEGS) ==================== */
+        function renderQuestion5(container) {
+            container.innerHTML = `
+                <div class="w-full max-w-5xl h-full grid grid-cols-1 lg:grid-cols-12 gap-4 items-center px-2 animate-pop-in">
+                    
+                    <!-- Kolom Kiri (7 kolom): Ilustrasi Anak dengan Label & 1 Label Kosong (?) pada LEGS -->
+                    <div class="lg:col-span-7 bg-white rounded-[2rem] border-4 border-sky-200 p-3 shadow-lg flex items-center justify-center h-full max-h-[360px]">
+                        <svg viewBox="0 0 440 310" class="w-full max-w-[420px] h-auto">
+                            <!-- Garis Penunjuk Label -->
+                            <line x1="175" y1="55" x2="115" y2="55" stroke="#64748b" stroke-width="3" stroke-dasharray="4 4"/>
+                            <line x1="265" y1="80" x2="325" y2="60" stroke="#64748b" stroke-width="3" stroke-dasharray="4 4"/>
+                            <line x1="255" y1="108" x2="325" y2="115" stroke="#64748b" stroke-width="3" stroke-dasharray="4 4"/>
+                            <line x1="155" y1="165" x2="105" y2="165" stroke="#64748b" stroke-width="3" stroke-dasharray="4 4"/>
+                            <!-- Garis Penunjuk ke Bagian Hilang (LEGS) -->
+                            <line x1="245" y1="250" x2="310" y2="250" stroke="#ef4444" stroke-width="4"/>
+
+                            <!-- Karakter Anak -->
+                            <!-- Kaki (Disorot) -->
+                            <rect x="195" y="210" width="20" height="65" rx="10" fill="#ffedd5" stroke="#ef4444" stroke-width="3.5"/>
+                            <rect x="225" y="210" width="20" height="65" rx="10" fill="#ffedd5" stroke="#ef4444" stroke-width="3.5"/>
+                            <rect x="188" y="268" width="30" height="16" rx="8" fill="#1e293b"/>
+                            <rect x="222" y="268" width="30" height="16" rx="8" fill="#1e293b"/>
+
+                            <!-- Lengan & Tangan -->
+                            <path d="M185 145 L150 175" stroke="#ffedd5" stroke-width="16" stroke-linecap="round"/>
+                            <path d="M185 145 L150 175" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+                            <path d="M255 145 L290 175" stroke="#ffedd5" stroke-width="16" stroke-linecap="round"/>
+                            <path d="M255 145 L290 175" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+
+                            <!-- Baju -->
+                            <rect x="185" y="135" width="70" height="80" rx="12" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2.5"/>
+
+                            <!-- Telinga & Kepala -->
+                            <circle cx="174" cy="82" r="11" fill="#ffedd5" stroke="#9a3412" stroke-width="2.5"/>
+                            <circle cx="266" cy="82" r="11" fill="#ffedd5" stroke="#9a3412" stroke-width="2.5"/>
+                            <circle cx="220" cy="80" r="46" fill="#ffedd5" stroke="#9a3412" stroke-width="2.5"/>
+                            <path d="M174 75 Q176 28 220 28 Q264 28 266 75 Q245 55 220 58 Q195 55 174 75 Z" fill="#451a03"/>
+                            <circle cx="204" cy="78" r="5" fill="#1e293b"/>
+                            <circle cx="236" cy="78" r="5" fill="#1e293b"/>
+                            <path d="M220 84 L217 92 L222 92" fill="none" stroke="#9a3412" stroke-width="2.5"/>
+                            <path d="M208 102 Q220 112 232 102" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+
+                            <!-- Label-label Terisi -->
+                            <g transform="translate(30, 40)">
+                                <rect width="85" height="30" rx="10" fill="#e2e8f0"/>
+                                <text x="42.5" y="20" text-anchor="middle" fill="#334155" font-family="Fredoka" font-weight="bold" font-size="15">HEAD</text>
+                            </g>
+                            <g transform="translate(325, 45)">
+                                <rect width="85" height="30" rx="10" fill="#e2e8f0"/>
+                                <text x="42.5" y="20" text-anchor="middle" fill="#334155" font-family="Fredoka" font-weight="bold" font-size="15">EYES</text>
+                            </g>
+                            <g transform="translate(325, 100)">
+                                <rect width="85" height="30" rx="10" fill="#e2e8f0"/>
+                                <text x="42.5" y="20" text-anchor="middle" fill="#334155" font-family="Fredoka" font-weight="bold" font-size="15">MOUTH</text>
+                            </g>
+                            <g transform="translate(20, 150)">
+                                <rect width="85" height="30" rx="10" fill="#e2e8f0"/>
+                                <text x="42.5" y="20" text-anchor="middle" fill="#334155" font-family="Fredoka" font-weight="bold" font-size="15">HANDS</text>
+                            </g>
+
+                            <!-- Kotak Kosong yang Ditanyakan (?) -->
+                            <g transform="translate(310, 230)">
+                                <rect width="105" height="40" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="3" stroke-dasharray="6 4"/>
+                                <text x="52.5" y="27" text-anchor="middle" fill="#dc2626" font-family="Fredoka" font-weight="bold" font-size="22">? ? ?</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Kolom Kanan (5 kolom): Word Bank & 3 Tombol Pilihan -->
+                    <div class="lg:col-span-5 flex flex-col justify-between gap-3 h-full max-h-[360px]">
+                        <!-- Word Bank -->
+                        <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3 text-center">
+                            <span class="text-xs font-extrabold text-amber-800 uppercase tracking-wider block mb-1.5">📖 WORD BANK</span>
+                            <div class="flex flex-wrap justify-center gap-1.5 text-xs sm:text-sm font-display font-bold text-slate-700">
+                                <span class="bg-white px-2.5 py-0.5 rounded-lg border border-amber-200">HEAD</span>
+                                <span class="bg-white px-2.5 py-0.5 rounded-lg border border-amber-200">EYES</span>
+                                <span class="bg-white px-2.5 py-0.5 rounded-lg border border-amber-200">EARS</span>
+                                <span class="bg-white px-2.5 py-0.5 rounded-lg border border-amber-200">NOSE</span>
+                                <span class="bg-white px-2.5 py-0.5 rounded-lg border border-amber-200">MOUTH</span>
+                                <span class="bg-white px-2.5 py-0.5 rounded-lg border border-amber-200">HANDS</span>
+                                <span class="bg-white px-2.5 py-0.5 rounded-lg border border-amber-200">LEGS</span>
+                            </div>
+                        </div>
+
+                        <!-- 3 Pilihan Jawaban -->
+                        <div class="flex flex-col gap-3 flex-1 justify-center">
+                            <button onclick="checkQ5('HEAD')" class="btn-3d bg-white hover:bg-sky-50 border-4 border-sky-300 text-slate-800 font-display font-bold text-2xl sm:text-3xl py-3.5 rounded-2xl cursor-pointer">
+                                HEAD
+                            </button>
+                            <button onclick="checkQ5('HANDS')" class="btn-3d bg-white hover:bg-sky-50 border-4 border-sky-300 text-slate-800 font-display font-bold text-2xl sm:text-3xl py-3.5 rounded-2xl cursor-pointer">
+                                HANDS
+                            </button>
+                            <button onclick="checkQ5('LEGS')" class="btn-3d bg-white hover:bg-sky-50 border-4 border-sky-300 text-slate-800 font-display font-bold text-2xl sm:text-3xl py-3.5 rounded-2xl cursor-pointer">
+                                LEGS
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+        }
+
+        function checkQ5(word) {
+            if (isAnsweringLocked) return;
+            speakWord(word);
+            handleAnswer(word === 'LEGS');
+        }
+
+        /* ==================== LOGIKA PENILAIAN & FEEDBACK POPUP ==================== */
+        function handleAnswer(isCorrect, customTitle = null) {
+            isAnsweringLocked = true;
+            clearInterval(questionTimerInterval);
+
+            const q = QUESTIONS_CONFIG[currentQuestionIndex];
+            questionResults[currentQuestionIndex] = isCorrect;
+
+            if (isCorrect) {
+                score += 20;
+                correctCount++;
+                playSoundEffect('correct');
+            } else {
+                playSoundEffect('wrong');
+            }
+
+            renderProgressDots();
+
+            // Tampilkan Modal Feedback
+            const overlay = document.getElementById('feedback-overlay');
+            const card = document.getElementById('feedback-card');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const desc = document.getElementById('feedback-desc');
+            const nextBtn = document.getElementById('btn-next-question');
+
+            if (isCorrect) {
+                card.className = 'bg-white rounded-[2.5rem] p-6 sm:p-8 max-w-md w-full text-center border-8 border-emerald-400 shadow-2xl animate-pop-in';
+                icon.textContent = '🌟';
+                title.textContent = customTitle || q.correctFeedback;
+                title.className = 'font-display font-bold text-3xl sm:text-4xl text-emerald-600 mb-2';
+                desc.innerHTML = `${q.explanation} <br><span class="inline-block mt-2 bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-base font-extrabold">+20 Poin!</span>`;
+                speakText(q.correctFeedback);
+            } else {
+                card.className = 'bg-white rounded-[2.5rem] p-6 sm:p-8 max-w-md w-full text-center border-8 border-amber-400 shadow-2xl animate-shake';
+                icon.textContent = '💡';
+                title.textContent = customTitle || q.wrongFeedback;
+                title.className = 'font-display font-bold text-2xl sm:text-3xl text-amber-600 mb-2';
+                desc.textContent = q.explanation;
+                speakText(q.wrongFeedback);
+            }
+
+            nextBtn.textContent = (currentQuestionIndex < 4) ? 'NEXT QUESTION ➡️' : 'SEE RESULTS 🏆';
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+        }
+
+        function proceedNextQuestion() {
+            playSoundEffect('click');
+            const overlay = document.getElementById('feedback-overlay');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+
+            if (currentQuestionIndex < QUESTIONS_CONFIG.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion(currentQuestionIndex);
+            } else {
+                finishAssessment();
+            }
+        }
+
+        /* ==================== HALAMAN HASIL AKHIR ==================== */
+        function finishAssessment() {
+            stopAllTimers();
+            playSoundEffect('finish');
+            showScreen('screen-result');
+
+            // Nama Murid
+            const rawName = document.getElementById('student-name-input').value.trim();
+            document.getElementById('result-student-name').textContent = rawName ? rawName : 'Murid Hebat Kelas III';
+
+            // Skor & Jumlah Benar
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('final-correct-count').textContent = correctCount;
+            document.getElementById('final-percent').textContent = `${score}%`;
+
+            // Progress Bar
+            const bar = document.getElementById('final-progress-bar');
+            bar.style.width = `${score}%`;
+
+            // Kategori Hasil Positif Sesuai Ketentuan
+            const headlineEl = document.getElementById('result-headline');
+            const subheadlineEl = document.getElementById('result-subheadline');
+            const starsEl = document.getElementById('result-stars');
+
+            if (score >= 80) {
+                headlineEl.textContent = 'AWESOME! 🌟';
+                headlineEl.className = 'font-display font-bold text-3xl sm:text-5xl text-emerald-600 tracking-wide';
+                subheadlineEl.textContent = 'You did a great job!';
+                starsEl.innerHTML = '<span>🌟</span><span>🌟</span><span>🌟</span>';
+                bar.className = 'h-full bg-gradient-to-r from-emerald-400 to-green-500 rounded-full transition-all duration-1000';
+                speakText('Awesome! You did a great job! Great job! You know your body parts!');
+            } else if (score >= 60) {
+                headlineEl.textContent = 'GOOD JOB! 👏';
+                headlineEl.className = 'font-display font-bold text-3xl sm:text-5xl text-sky-600 tracking-wide';
+                subheadlineEl.textContent = 'You are learning very well!';
+                starsEl.innerHTML = '<span>⭐</span><span>⭐</span><span>✨</span>';
+                bar.className = 'h-full bg-gradient-to-r from-sky-400 to-blue-500 rounded-full transition-all duration-1000';
+                speakText('Good job! You are learning very well! Great job! You know your body parts!');
+            } else {
+                headlineEl.textContent = 'KEEP TRYING! 💪';
+                headlineEl.className = 'font-display font-bold text-3xl sm:text-5xl text-amber-600 tracking-wide';
+                subheadlineEl.textContent = "Let's practice together!";
+                starsEl.innerHTML = '<span>⭐</span><span>💫</span><span>💪</span>';
+                bar.className = 'h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-1000';
+                speakText("Keep trying! Let's practice together! Great job! You know your body parts!");
+            }
+        }
+    </script>
+</body>
+</html>
